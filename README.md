@@ -41,3 +41,49 @@ Why H2O.ai?
 ---
 
 ## 📂 Repository Structure
+ wildfire_pred_h2o/
+├── Final_Distributed_ML_using_H2O_Framework.ipynb # Main notebook
+├── Project_Report.pdf # Detailed report
+├── flatfile.txt # H2O node list for cluster
+├── requirements.txt # Python dependencies
+├── csv_merge.py # CSV merge utility
+├── AutoML.txt # AutoML notes
+├── Setup1.png, Setup2.png # Cluster setup screenshots
+└── README.md # This file
+
+
+---
+
+## 📦 Dataset
+- **Source:** [NASA VIIRS SNPP Active Fire/Hotspot Data (375m, 2023)](https://firms.modaps.eosdis.nasa.gov/download/)  
+- **Coverage:** Global, Jan–Dec 2023  
+- **Resolution:** 375m, WGS84 projection  
+- **Format:** CSV  
+
+**Features Used:** latitude, longitude, brightness, scan, track, date/time, satellite, confidence, FRP, day/night  
+
+⚠️ Dataset not included (too large). Download directly from NASA FIRMS.
+
+---
+
+## 🛠 Preprocessing
+- **Merge CSVs** (country-wise → global dataset) using `csv_merge.py`  
+- **Feature engineering & cleaning** (categorical encoding, null handling)  
+- **Split into train/validation/test** (70/15/15)  
+
+---
+
+## 🤖 Model Training
+### 1. AutoML (Distributed)
+- Framework: **H2O AutoML**  
+- Models trained: GBM, DRF, XGBoost, GLM, Deep Learning, Stacked Ensembles  
+- Evaluated with leaderboard (AUC, LogLoss, variable importance)  
+
+### 2. Manual DRF (Baseline)
+```python
+from h2o.estimators.random_forest import H2ORandomForestEstimator
+
+rf_model = H2ORandomForestEstimator(ntrees=30, max_depth=20, seed=1234)
+rf_model.train(x=features, y="confidence", training_frame=train, validation_frame=valid)
+
+
